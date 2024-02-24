@@ -1,0 +1,27 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  bin = "tmp/app"
+  cmd = "go build -o ./tmp/app/main src/cmd/web/main.go"
+  delay = 1000
+  include_ext = ["go"]
+  exclude_dir = ["assets", "tmp", "vendor", "datadb"]
+  full_bin = "./tmp/app/main"
+  kill_delay = "0s"
+  log = "build-errors.log"
+  send_interrupt = false
+  stop_on_error = false
+
+[color]
+  app = ""
+  build = "yellow"
+  main = "magenta"
+  runner = "green"
+  watcher = "cyan"
+
+[log]
+  time = false
+
+[misc]
+  clean_on_exit = true

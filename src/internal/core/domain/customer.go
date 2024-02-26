@@ -9,10 +9,9 @@ import (
 // Individuals who make online purchases and complete payments
 // through the platform.
 type Customer struct {
-	ID            uuid.UUID
-	Name          string
-	Email         string
-	PaymentMethod PaymentMethod
+	ID    uuid.UUID
+	Name  string
+	Email string
 }
 
 func NewCustomer() *Customer {

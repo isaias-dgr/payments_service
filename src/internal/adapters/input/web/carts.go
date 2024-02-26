@@ -9,18 +9,7 @@ import (
 	"github.com/isaias-dgr/ecommerce_service/src/internal/core/domain"
 )
 
-func (e ECommerceHandler) GetByIDPayment(c *gin.Context) {
-	e.log.Info("e-commerce request get by payment ID")
-	ctx := c.Request.Context()
-	userID := c.Param("paymentID")
-	payment, err := e.uPayments.GetAll(ctx, userID)
-	if err != nil {
-		e.log.Error("Fail getting all payments")
-	}
-	c.JSON(http.StatusOK, payment)
-}
-
-func (e ECommerceHandler) RefundPayment(c *gin.Context) {
+func (e ECommerceHandler) GetAllCart(c *gin.Context) {
 	ctx := c.Request.Context()
 	userID := c.Param("userID")
 	payment, err := e.uPayments.GetAll(ctx, userID)
@@ -30,7 +19,46 @@ func (e ECommerceHandler) RefundPayment(c *gin.Context) {
 	c.JSON(http.StatusOK, payment)
 }
 
-func (e ECommerceHandler) CreatePayment(c *gin.Context) {
+func (e ECommerceHandler) GetbyIDCart(c *gin.Context) {
+	ctx := c.Request.Context()
+	userID := c.Param("userID")
+	payment, err := e.uPayments.GetAll(ctx, userID)
+	if err != nil {
+		e.log.Error("Fail getting all payments")
+	}
+	c.JSON(http.StatusOK, payment)
+}
+
+func (e ECommerceHandler) AddItemCart(c *gin.Context) {
+	ctx := c.Request.Context()
+	userID := c.Param("userID")
+	payment, err := e.uPayments.GetAll(ctx, userID)
+	if err != nil {
+		e.log.Error("Fail getting all payments")
+	}
+	c.JSON(http.StatusOK, payment)
+}
+
+func (e ECommerceHandler) CreateCart(c *gin.Context) {
+	ctx := c.Request.Context()
+
+	carts := &domain.ShoppingCart{}
+	body, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		e.log.Error("Fail creatting carts")
+	}
+	if err := json.Unmarshal(body, carts); err != nil {
+		e.log.Errorf("JSON unmarshaling failed: %s", err)
+	}
+
+	err = e.uCarts.Create(ctx, carts)
+	if err != nil {
+		e.log.Error("Fail creatting carts")
+	}
+	c.JSON(http.StatusOK, carts)
+}
+
+func (e ECommerceHandler) UpdateCart(c *gin.Context) {
 	ctx := c.Request.Context()
 
 	payment := &domain.Payment{}

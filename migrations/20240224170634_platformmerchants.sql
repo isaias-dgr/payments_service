@@ -2,10 +2,10 @@
 -- +goose StatementBegin
 SELECT 'up SQL query';
 CREATE TABLE PlatformMerchants (
-    PlatformID UUID,
-    MerchantID UUID,
-    FOREIGN KEY (PlatformID) REFERENCES OnlinePaymentPlatforms(PlatformID),
-    FOREIGN KEY (MerchantID) REFERENCES Merchants(MerchantID),
+    PlatformID INT,
+    MerchantID INT,
+    FOREIGN KEY (PlatformID) REFERENCES OnlinePaymentPlatforms(id),
+    FOREIGN KEY (MerchantID) REFERENCES Merchants(id),
     PRIMARY KEY (PlatformID, MerchantID)
 );
 -- +goose StatementEnd
@@ -14,3 +14,4 @@ CREATE TABLE PlatformMerchants (
 -- +goose StatementBegin
 SELECT 'down SQL query';
 -- +goose StatementEnd
+

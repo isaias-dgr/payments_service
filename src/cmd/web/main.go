@@ -10,6 +10,8 @@ import (
 	useCase "github.com/isaias-dgr/ecommerce_service/src/internal/core/usecase"
 
 	log "github.com/sirupsen/logrus"
+
+	_ "github.com/lib/pq"
 )
 
 func SetUpLog() *log.Logger {
@@ -28,7 +30,7 @@ func SetClinetDB() *log.Logger {
 	return logger
 }
 
-func SetUpRepository(logger *log.Logger) (*sql.DB, *repo.Payments) {
+func SetUpRepository(logger *log.Logger) *sql.DB {
 	logger.Info("💾 Set up Database.")
 	logger.Info(os.Getenv("POSTGRES_USER"))
 	connection := fmt.Sprintf(
@@ -49,7 +51,7 @@ func SetUpRepository(logger *log.Logger) (*sql.DB, *repo.Payments) {
 	if err != nil {
 		logger.Error(err)
 	}
-	return dbConn, repo.NewPayments(dbConn, logger)
+	return dbConn
 }
 
 func main() {
@@ -61,10 +63,26 @@ func main() {
 		"8080")
 	log.Info(msg)
 	log.Info("🚀 API V1.")
-	_, repo_payments := SetUpRepository(log)
+	dbConn := SetUpRepository(log)
+	defer func() {
+		err := dbConn.Close()
+		if err != nil {
+			log.Error(err)
+		}
+	}()
 
-	u := useCase.NewPayments(log)
-	webHandler := web.NewPaymentsHandler(u, log)
-
+	ucPayments := useCase.NewPayments(log, repo.NewPayments(dbConn, log))
+	ucProducts := useCase.NewProducts(log, repo.NewProducts(dbConn, log))
+	ucCustomers := useCase.NewCustomers(log, repo.NewCustomers(dbConn, log))
+	usMerchants := useCase.NewMerchants(log, repo.NewMerchants(dbConn, log))
+	usCarts := useCase.NewCarts(log, repo.NewCarts(dbConn, log))
+	webHandler := web.NewECommerceHandler(
+		ucPayments,
+		ucProducts,
+		ucCustomers,
+		usMerchants,
+		usCarts,
+		log,
+	)
 	webHandler.Execute()
 }

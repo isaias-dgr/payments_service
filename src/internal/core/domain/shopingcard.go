@@ -15,14 +15,14 @@ type ShoppingCartItem struct {
 // ShoppingCart represents a user's shopping cart.
 type ShoppingCart struct {
 	ID      uuid.UUID
+	OwnerID uuid.UUID
 	Items   []ShoppingCartItem
-	OwnerID string
 }
 
 func NewShoppingCart() *ShoppingCart {
 	return &ShoppingCart{}
 }
 
-func (p ShoppingCart) Print() string {
-	return fmt.Sprintf("ShoppingCart: %s", p.ID)
+func (s ShoppingCart) Print() string {
+	return fmt.Sprintf("ShoppingCart: %s", s.ID)
 }
